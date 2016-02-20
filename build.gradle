@@ -18,6 +18,7 @@ dependencies {
   compile "io.vertx:vertx-core:$vertxVersion"
   compile "io.vertx:vertx-web:$vertxVersion"
   compile "io.vertx:vertx-lang-groovy:$vertxVersion"
+  compile "io.vertx:vertx-lang-js:$vertxVersion"
 
   // Redis
   compile "io.vertx:vertx-redis-client:$vertxVersion"

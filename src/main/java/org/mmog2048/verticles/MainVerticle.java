@@ -50,6 +50,8 @@ public class MainVerticle extends AbstractVerticle {
   }
 
   private void deployWebServer(Future<Void> future) {
+    vertx.deployVerticle("board-engine-verticle.js");
+
     vertx.deployVerticle("WebServer.groovy", serverResult -> {
       if (serverResult.failed()) {
         future.fail(serverResult.cause());
