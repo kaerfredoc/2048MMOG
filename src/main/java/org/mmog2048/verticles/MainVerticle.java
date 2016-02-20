@@ -1,7 +1,6 @@
 package org.mmog2048.verticles;
 
 import io.vertx.core.*;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import org.mmog2048.utils.MultipleFutures;
@@ -40,9 +39,7 @@ public class MainVerticle extends AbstractVerticle {
   }
 
   private void deployEmbeddedRedis(Future<Void> future) {
-    DeploymentOptions options = new DeploymentOptions();
-    options.setWorker(true);
-    vertx.deployVerticle(EmbeddedRedis.class.getName(), options, result -> {
+    vertx.deployVerticle(EmbeddedRedis.class.getName(), result -> {
       if (result.failed()) {
         future.fail(result.cause());
       } else {
@@ -53,14 +50,8 @@ public class MainVerticle extends AbstractVerticle {
   }
 
   private void deployWebServer(Future<Void> future) {
-    JsonObject dbConfig = new JsonObject();
-    dbConfig.put("redis", redisConfig());
-
-    DeploymentOptions webserverOptions = new DeploymentOptions();
-    webserverOptions.setConfig(dbConfig);
-
-    vertx.deployVerticle("WebServer.groovy",webserverOptions,serverResult -> {
-      if(serverResult.failed()) {
+    vertx.deployVerticle("WebServer.groovy", serverResult -> {
+      if (serverResult.failed()) {
         future.fail(serverResult.cause());
       } else {
         deploymentIds.add(serverResult.result());
@@ -84,12 +75,5 @@ public class MainVerticle extends AbstractVerticle {
         future.fail(res.cause());
       }
     });
-  }
-
-  private static JsonObject redisConfig() {
-    JsonObject config = new JsonObject();
-    config.put("host", "localhost");
-    config.put("port", REDIS_PORT);
-    return config;
   }
 }
