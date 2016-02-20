@@ -16,29 +16,22 @@ public class MainVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    deploymentIds = new ArrayList<String>(2);
+    deploymentIds = new ArrayList<>(2);
   }
 
   @Override
   public void start(Future<Void> future) {
     vertx.deployVerticle("WebServer.groovy");
     SingleFuture singleFuture = new SingleFuture();
-    singleFuture.setHandler(new AsyncResultHandler() {
-      @Override
-      public void handle(Object event) {
+    singleFuture.setHandler(event -> {
 
-      }
     });
   }
 
   @Override
   public void stop(Future<Void> future) {
     MultipleFutures futures = new MultipleFutures(future);
-    deploymentIds.forEach(deploymentId -> {
-      futures.add(fut -> {
-        undeploy(deploymentId, fut);
-      });
-    });
+    deploymentIds.forEach(deploymentId -> futures.add(fut -> undeploy(deploymentId, fut)));
     futures.start();
   }
 
