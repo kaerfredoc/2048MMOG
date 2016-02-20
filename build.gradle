@@ -32,6 +32,7 @@ dependencies {
 processResources {
   from 'src/main/groovy'
   from 'webroot'
+  from 'src/js'
 }
 
 mainClassName = 'io.vertx.core.Launcher'
