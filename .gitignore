@@ -1,11 +1,20 @@
+.DS_Store
 .gradle
-build/
-
-# Ignore Gradle GUI config
-gradle-app.setting
-
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
-
-# Cache of project
-.gradletasknamecache
+.idea
+.classpath
+.project
+.settings
+.yardoc
+.yardopts
+bin
+build
+target
+out
+*.iml
+*.ipr
+*.iws
+test-output
+test-results
+test-tmp
+*.class
+.vertx
