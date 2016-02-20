@@ -1,4 +1,5 @@
 plugins {
+  id "groovy"
   id 'java'
   id 'eclipse'
   id 'idea'
@@ -16,6 +17,7 @@ dependencies {
   // Vert.x standard
   compile "io.vertx:vertx-core:$vertxVersion"
   compile "io.vertx:vertx-web:$vertxVersion"
+  compile "io.vertx:vertx-lang-groovy:$vertxVersion"
 
   // Redis
   compile "io.vertx:vertx-redis-client:$vertxVersion"
@@ -24,6 +26,11 @@ dependencies {
   // Handlebars
   compile "io.vertx:vertx-web-templ-handlebars:$vertxVersion"
   compile 'com.github.jknack:handlebars:2.1.0'
+}
+
+processResources {
+  from 'src/main/groovy'
+  from 'webroot'
 }
 
 mainClassName = 'io.vertx.core.Launcher'
