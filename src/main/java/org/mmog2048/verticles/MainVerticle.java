@@ -21,16 +21,7 @@ public class MainVerticle extends AbstractVerticle {
 
   @Override
   public void start(Future<Void> future) {
-    vertx.createHttpServer()
-        .requestHandler(req -> req.response().end("Hello World!"))
-        .listen(8080, handler -> {
-          if (handler.succeeded()) {
-            System.out.println("http://localhost:8080/");
-          } else {
-            System.err.println("Failed to listen on port 8080");
-          }
-        });
-
+    vertx.deployVerticle("WebServer.groovy");
     SingleFuture singleFuture = new SingleFuture();
     singleFuture.setHandler(new AsyncResultHandler() {
       @Override
