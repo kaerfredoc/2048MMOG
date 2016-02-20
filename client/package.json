@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Client aide of 2048 MMOG",
   "scripts": {
-    "start": "TARGET=dev webpack-dev-server --progress --colors --hot --inline --history-api-fallback",
-    "devbuild": "TARGET=dev webpack",
+    "start": "cross-env TARGET=dev webpack-dev-server --progress --colors --hot --inline --history-api-fallback",
+    "devbuild": "cross-env TARGET=dev webpack",
     "build": "webpack"
   },
   "repository": {
@@ -29,6 +29,7 @@
     "style-loader": "^0.12.3",
     "url-loader": "^0.5.6",
     "vertx3-eventbus-client": "^3.0.0-1",
+    "cross-env": "^1.0.7",
     "webpack": "^1.12.13",
     "webpack-dev-server": "^1.12.13",
     "webpack-merge": "^0.7.3"

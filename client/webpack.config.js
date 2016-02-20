@@ -7,7 +7,17 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 var pkg = require('./package.json');
 
-var TARGET = process.env.TARGET;
+var TARGET = 'build';
+
+// Check for existence of the environment variable
+if (process.env.TARGET) {
+
+  // Log the value to the console
+  console.log('process.env.TARGET is set to: ' + process.env.TARGET);
+
+  // Override the default
+  TARGET = process.env.TARGET;
+}
 
 var ROOT_PATH = path.resolve(__dirname);
 
