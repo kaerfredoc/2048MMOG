@@ -18,12 +18,47 @@ public class MainVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    deploymentIds = new ArrayList<>(1);
+    deploymentIds = new ArrayList<>(2);
   }
 
   @Override
   public void start(Future<Void> future) {
+    deployEmbeddedDbs(future, this::deployWebServer);
+  }
+
+  private void deployEmbeddedDbs(Future<Void> future, Handler<Future<Void>> whatsNext) {
+    MultipleFutures dbDeployments = new MultipleFutures();
+    dbDeployments.add(this::deployEmbeddedRedis);
+    dbDeployments.setHandler(result -> {
+      if (result.failed()) {
+        future.fail(result.cause());
+      } else {
+        whatsNext.handle(future);
+      }
+    });
+    dbDeployments.start();
+  }
+
+  private void deployEmbeddedRedis(Future<Void> future) {
+    DeploymentOptions options = new DeploymentOptions();
+    options.setWorker(true);
+    vertx.deployVerticle(EmbeddedRedis.class.getName(), options, result -> {
+      if (result.failed()) {
+        future.fail(result.cause());
+      } else {
+        deploymentIds.add(result.result());
+        future.complete();
+      }
+    });
+  }
+
+  private void deployWebServer(Future<Void> future) {
+    JsonObject dbConfig = new JsonObject();
+    dbConfig.put("redis", redisConfig());
+
     DeploymentOptions webserverOptions = new DeploymentOptions();
+    webserverOptions.setConfig(dbConfig);
+
     vertx.deployVerticle("WebServer.groovy",webserverOptions,serverResult -> {
       if(serverResult.failed()) {
         future.fail(serverResult.cause());
