@@ -5,22 +5,28 @@ import io.vertx.core.Future;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import redis.embedded.RedisServer;
-
-import java.io.IOException;
+import redis.embedded.RedisServerBuilder;
 
 public class EmbeddedRedis extends AbstractVerticle {
-    private static final Logger log = LoggerFactory.getLogger(EmbeddedRedis.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EmbeddedRedis.class);
+    private static String OS = System.getProperty("os.name").toLowerCase();
     private RedisServer server;
 
     @Override
     public void start(Future<Void> future) {
         try {
-            server = new RedisServer(MainVerticle.REDIS_PORT);
+            RedisServerBuilder builder = RedisServer.builder()
+                    .port(MainVerticle.REDIS_PORT);
+            if(isWindows()) {
+                // https://github.com/kstyrc/embedded-redis/issues/52
+                builder = builder.setting("maxheap 512M");
+            }
+            server = builder.build();
             server.start(); // seems to be blocking
-            log.info("Redis started on " + MainVerticle.REDIS_PORT);
+            LOG.info("Redis started on " + MainVerticle.REDIS_PORT);
             future.complete();
-        } catch (IOException ioe) {
-            log.error(ioe.getMessage(),ioe);
+        } catch (Exception ioe) {
+            LOG.error(ioe.getMessage(),ioe);
             future.fail(ioe);
         }
     }
@@ -32,5 +38,9 @@ public class EmbeddedRedis extends AbstractVerticle {
             server = null;
         }
         future.complete();
+    }
+
+    private boolean isWindows() {
+        return (OS.indexOf("win") >= 0);
     }
 }
