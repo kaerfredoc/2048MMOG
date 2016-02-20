@@ -5,7 +5,7 @@
   "scripts": {
     "start": "TARGET=dev webpack-dev-server --progress --colors --hot --inline --history-api-fallback",
     "devbuild": "TARGET=dev webpack",
-    "build": "TARGET=build webpack"
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -29,9 +29,9 @@
     "style-loader": "^0.12.3",
     "url-loader": "^0.5.6",
     "vertx3-eventbus-client": "^3.0.0-1",
-    "webpack": "^1.10.5",
-    "webpack-dev-server": "^1.10.1",
-    "webpack-merge": "^0.1.2"
+    "webpack": "^1.12.13",
+    "webpack-dev-server": "^1.12.13",
+    "webpack-merge": "^0.7.3"
   },
   "dependencies": {
     "alt": "^0.17.1",
