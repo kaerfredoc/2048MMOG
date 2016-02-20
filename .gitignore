@@ -18,6 +18,7 @@ test-results
 test-tmp
 *.class
 .vertx
+.gradletasknamecache
 
 ### Redis template
 # Ignore redis binary dump (dump.rdb) files
