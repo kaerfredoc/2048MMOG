@@ -4,7 +4,7 @@ const alt = new Alt();
 
 // There's a chrome plugin for Alt that relies on this
 //
-import chromeDebug from 'alt/utils/chromeDebug';
+import chromeDebug from 'alt-utils/lib/chromeDebug';
 chromeDebug(alt);
 
 export default alt;
