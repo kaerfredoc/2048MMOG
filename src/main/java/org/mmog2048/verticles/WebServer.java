@@ -50,18 +50,15 @@ public class WebServer extends AbstractVerticle {
           }
       );
 
-      eb.consumer("org.mmog2048:register", new Handler<Message<Object>>() {
-        @Override
-        public void handle(Message<Object> event) {
-          String name = ((JsonObject)event.body()).getString("name");
-          System.out.println(event.replyAddress());
+      eb.consumer("org.mmog2048:register", event -> {
+        String name = ((JsonObject)event.body()).getString("name");
+        System.out.println(event.replyAddress());
 
-          // todo write this to redis
-          String uuid = UUID.randomUUID().toString();
-          JsonObject reply = new JsonObject();
-          reply.put("token", uuid);
-          event.reply(reply);
-        }
+        // todo write this to redis
+        String uuid = UUID.randomUUID().toString();
+        JsonObject reply = new JsonObject();
+        reply.put("token", uuid);
+        event.reply(reply);
       });
 
       SockJSHandler sockJSHandler = SockJSHandler.create(vertx);

@@ -23,7 +23,7 @@ main();
 
 
 const Vertx = require('vertx3-eventbus-client');
-var eb = new Vertx("http://localhost:8080/eventbus");
+var eb = new Vertx("/eventbus");
 
 eb.onopen = function () {
   eb.send("org.mmog2048:register", {"name": "test"}, function(err, res) {
