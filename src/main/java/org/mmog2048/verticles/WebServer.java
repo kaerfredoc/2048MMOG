@@ -25,7 +25,7 @@ public class WebServer extends AbstractVerticle {
     RedisClient.create(vertx, redisOptions);
 
     vertx.eventBus().consumer("org.mmog2048",
-        event -> System.out.println("Received news: " + event.body()));
+        event -> LOG.info("Received news: " + event.body()));
 
     SockJSHandler sockJSHandler = SockJSHandler.create(vertx);
     BridgeOptions options = new BridgeOptions();
@@ -49,7 +49,7 @@ public class WebServer extends AbstractVerticle {
         .requestHandler(router::accept)
         .listen(httpPort);
 
-    System.out.println("Listening on " + httpPort);
+      LOG.info("Listening on " + httpPort);
       future.complete();
     } catch (Exception ioe) {
       LOG.error(ioe.getMessage(), ioe);
