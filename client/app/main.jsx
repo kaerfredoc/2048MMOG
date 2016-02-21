@@ -18,4 +18,9 @@ function main() {
 }
 
 main();
-VertxActions.doVertxConnect();
+
+const Vertx = require('vertx3-eventbus-client');
+var eb = new Vertx("http://localhost:8080/eventbus");
+eb.onopen = function () {
+  eb.send("org.mmog2048", {"msg":"From the client"});
+};
