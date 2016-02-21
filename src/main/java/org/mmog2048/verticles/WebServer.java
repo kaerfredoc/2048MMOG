@@ -2,7 +2,9 @@ package org.mmog2048.verticles;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
+import io.vertx.core.Handler;
 import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -19,6 +21,7 @@ import org.mmog2048.dao.RedisDAO;
 import org.mmog2048.utils.RedisUtils;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class WebServer extends AbstractVerticle {
   private static final Logger LOG = LoggerFactory.getLogger(WebServer.class);
@@ -28,10 +31,11 @@ public class WebServer extends AbstractVerticle {
     try {
       JsonObject config = context.config();
       RedisOptions redisOptions = RedisUtils.createRedisOptions(config.getJsonObject("redis"));
-      RedisDAO redisDAO = new RedisDAO(RedisClient.create(vertx, redisOptions));
+      RedisClient redisClient = RedisClient.create(vertx, redisOptions);
+      RedisDAO redisDAO = new RedisDAO(redisClient);
 
       // todo What do we want to do with this guy
-//      redisDAO
+      redisClient.info(event1 -> System.out.println(event1.result()));
 
       EventBus eb = vertx.eventBus();
       vertx.setPeriodic(
@@ -45,6 +49,20 @@ public class WebServer extends AbstractVerticle {
             eb.publish("org.mmog2048:status-message", "Hello " + RandomStringUtils.randomAlphabetic(10) + " " + now);
           }
       );
+
+      eb.consumer("org.mmog2048:register", new Handler<Message<Object>>() {
+        @Override
+        public void handle(Message<Object> event) {
+          String name = ((JsonObject)event.body()).getString("name");
+          System.out.println(event.replyAddress());
+
+          // todo write this to redis
+          String uuid = UUID.randomUUID().toString();
+          JsonObject reply = new JsonObject();
+          reply.put("token", uuid);
+          event.reply(reply);
+        }
+      });
 
       SockJSHandler sockJSHandler = SockJSHandler.create(vertx);
       BridgeOptions options = new BridgeOptions();

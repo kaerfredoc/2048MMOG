@@ -9,7 +9,6 @@ class StatusStore {
   }
 
   onVertxReady(eventBus) {
-    console.log("eb" + eventBus);
     eventBus.registerHandler(
       BusRoutes.status_message,
       VertxActions.statusUpdate
@@ -17,7 +16,6 @@ class StatusStore {
   }
 
   onStatusUpdate(message) {
-    console.log(message);
     this.setState({gameStatus: message[1].body});
   };
 }
