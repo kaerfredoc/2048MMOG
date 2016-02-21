@@ -43,7 +43,7 @@ var common = {
   },
   plugins: [
     new HtmlwebpackPlugin({
-      title: 'Vertx3 React SPA'
+      title: '2048 MMOG Contest'
     })
   ]
 };
