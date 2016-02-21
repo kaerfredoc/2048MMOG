@@ -18,6 +18,11 @@ class VertxStore {
     this.tryLimit = 8;
 
     this.bindActions(VertxActions);
+
+    window.setTimeout(
+      this.connectEventBus,
+      1000, this
+    );
   }
 
   connectEventBus(selfObj) {
@@ -87,11 +92,6 @@ class VertxStore {
   onVertxUnready(eventBus) {
     console.log('not ready');
     this.setState({connectProgress: 0});
-
-    window.setTimeout(
-      this.connectEventBus,
-      1000, this
-    );
   }
 
   onVertxError(err) {

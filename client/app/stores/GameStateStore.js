@@ -18,7 +18,7 @@ class GameStateStore {
 
   onGameUpdate(message) {
     console.log(message);
-    this.setState({serverTime: message.systemTime});
+    this.setState({serverTime: message[1].body.serverTime});
   };
 }
 

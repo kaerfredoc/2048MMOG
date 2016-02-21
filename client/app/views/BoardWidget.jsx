@@ -1,6 +1,5 @@
 import React from 'react';
 import AltContainer from 'alt-container';
-import connectToStores from 'alt-utils/lib/connectToStores';
 
 import VertxActions from '../actions/VertxActions';
 import GameStateStore from '../stores/GameStateStore';
@@ -29,6 +28,7 @@ export default class BoardWidget extends React.Component {
   }
 
   render() {
+    console.log(this.props.server);
     return (
       <div className="ui segment">
         <AltContainer stores={{vertx: VertxStore, server: GameStateStore}}>

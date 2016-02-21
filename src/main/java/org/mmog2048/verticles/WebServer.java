@@ -35,7 +35,7 @@ public class WebServer extends AbstractVerticle {
             System.out.println(now);
 
             eb.publish("org.mmog2048:game-state",
-                new JsonObject().put("systemTime", now));
+                new JsonObject().put("serverTime", now));
           }
       );
 
