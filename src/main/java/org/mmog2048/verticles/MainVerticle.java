@@ -1,6 +1,7 @@
 package org.mmog2048.verticles;
 
 import io.vertx.core.*;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import org.mmog2048.utils.MultipleFutures;
@@ -52,7 +53,8 @@ public class MainVerticle extends AbstractVerticle {
   private void deployWebServer(Future<Void> future) {
     vertx.deployVerticle("src/main/js/board-engine-verticle.js");
 
-    vertx.deployVerticle("WebServer.groovy", serverResult -> {
+    DeploymentOptions options = new DeploymentOptions().setConfig(redisConfig());
+    vertx.deployVerticle(WebServer.class.getName(), options, serverResult -> {
       if (serverResult.failed()) {
         future.fail(serverResult.cause());
       } else {
@@ -77,5 +79,11 @@ public class MainVerticle extends AbstractVerticle {
         future.fail(res.cause());
       }
     });
+  }
+
+  private static JsonObject redisConfig() {
+    JsonObject config = new JsonObject();
+    config.put("redis", (new JsonObject().put("host", "localhost").put("port", REDIS_PORT)));
+    return config;
   }
 }
