@@ -1,11 +1,15 @@
 import React from 'react';
-import AltContainer from 'alt/AltContainer';
+import AltContainer from 'alt-container';
+import BoardWidget from './BoardWidget';
 
 export default class App extends React.Component {
 
   render() {
     return (
   <div class="container">
+    <div className="">
+      <BoardWidget/>
+    </div>
     <div class="heading">
       <h1 class="title">2048</h1>
       <div class="scores-container">
