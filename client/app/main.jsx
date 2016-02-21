@@ -1,5 +1,5 @@
 import alt from './libs/alt';
-import makeFinalStore from 'alt/utils/makeFinalStore';
+import makeFinalStore from 'alt-utils/lib/makeFinalStore';
 import React from 'react';
 import App from './views/App';
 import VertxActions from './actions/VertxActions.js';
