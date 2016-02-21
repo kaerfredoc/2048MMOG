@@ -2,9 +2,8 @@ package org.mmog2048.verticles;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.eventbus.EventBus;
-import io.vertx.core.eventbus.Message;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -52,10 +51,19 @@ public class WebServer extends AbstractVerticle {
 
       eb.consumer("org.mmog2048:register", event -> {
         String name = ((JsonObject)event.body()).getString("name");
-        System.out.println(event.replyAddress());
 
-        // todo write this to redis
+        // todo write an initial game/board to redis
         String uuid = UUID.randomUUID().toString();
+
+        // Register this specific game channel to receive moves
+        eb.consumer("org.mmog2048:move:" + uuid, eventMove -> {
+          JsonObject eventMoveJson = ((JsonObject) eventMove.body());
+          String move = eventMoveJson.getString("move");
+          JsonArray jsonArray = GameEngine.updateBoard(uuid, move, redisDAO);
+
+          eventMove.reply(jsonArray);
+        });
+
         JsonObject reply = new JsonObject();
         reply.put("token", uuid);
         event.reply(reply);
