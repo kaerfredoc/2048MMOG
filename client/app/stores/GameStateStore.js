@@ -9,7 +9,6 @@ class GameStateStore {
   }
 
   onVertxReady(eventBus) {
-    console.log("eb" + eventBus);
     eventBus.registerHandler(
       BusRoutes.game_state,
       VertxActions.gameUpdate
@@ -17,7 +16,6 @@ class GameStateStore {
   }
 
   onGameUpdate(message) {
-    console.log(message);
     this.setState({serverTime: message[1].body.serverTime});
   };
 }
