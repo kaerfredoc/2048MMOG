@@ -26,7 +26,10 @@ public class WebServer extends AbstractVerticle {
     try {
       JsonObject config = context.config();
       RedisOptions redisOptions = RedisUtils.createRedisOptions(config.getJsonObject("redis"));
-      RedisClient.create(vertx, redisOptions);
+      RedisClient redisClient = RedisClient.create(vertx, redisOptions);
+
+      // todo What do we want to do with this guy
+//      redisClient
 
       EventBus eb = vertx.eventBus();
       vertx.setPeriodic(
