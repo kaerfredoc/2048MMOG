@@ -2,6 +2,7 @@ package org.mmog2048.verticles;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
+import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -12,7 +13,10 @@ import io.vertx.ext.web.handler.sockjs.PermittedOptions;
 import io.vertx.ext.web.handler.sockjs.SockJSHandler;
 import io.vertx.redis.RedisClient;
 import io.vertx.redis.RedisOptions;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.mmog2048.utils.RedisUtils;
+
+import java.util.Date;
 
 public class WebServer extends AbstractVerticle {
   private static final Logger LOG = LoggerFactory.getLogger(WebServer.class);
@@ -20,34 +24,42 @@ public class WebServer extends AbstractVerticle {
   @Override
   public void start(Future<Void> future) {
     try {
-    JsonObject config = context.config();
-    RedisOptions redisOptions = RedisUtils.createRedisOptions(config.getJsonObject("redis"));
-    RedisClient.create(vertx, redisOptions);
+      JsonObject config = context.config();
+      RedisOptions redisOptions = RedisUtils.createRedisOptions(config.getJsonObject("redis"));
+      RedisClient.create(vertx, redisOptions);
 
-    vertx.eventBus().consumer("org.mmog2048",
-        event -> LOG.info("Received news: " + event.body()));
+      EventBus eb = vertx.eventBus();
+      vertx.setPeriodic(
+          1000, event -> {
+            String now = DateFormatUtils.ISO_DATETIME_FORMAT.format(new Date());
+            System.out.println(now);
 
-    SockJSHandler sockJSHandler = SockJSHandler.create(vertx);
-    BridgeOptions options = new BridgeOptions();
-    PermittedOptions permitted = new PermittedOptions(); /* allow everything, we don't care for the demo */
-    options.addOutboundPermitted(permitted);
-    options.addInboundPermitted(permitted);
-    sockJSHandler.bridge(options);
+            eb.publish("org.mmog2048:game-state",
+                new JsonObject().put("systemTime", now));
+          }
+      );
 
-    Router router = Router.router(vertx);
-    StaticHandler assetHandler = StaticHandler
-        .create()
-        .setDirectoryListing(true);
+      SockJSHandler sockJSHandler = SockJSHandler.create(vertx);
+      BridgeOptions options = new BridgeOptions();
+      PermittedOptions permitted = new PermittedOptions(); /* allow everything, we don't care for the demo */
+      options.addOutboundPermitted(permitted);
+      options.addInboundPermitted(permitted);
+      sockJSHandler.bridge(options);
 
-    router.route("/eventbus/*").handler(sockJSHandler);
-    router.get("/*").handler(assetHandler);
+      Router router = Router.router(vertx);
+      StaticHandler assetHandler = StaticHandler
+          .create()
+          .setDirectoryListing(true);
 
-    Integer httpPort = 8080;
+      router.route("/eventbus/*").handler(sockJSHandler);
+      router.get("/*").handler(assetHandler);
 
-    vertx
-        .createHttpServer()
-        .requestHandler(router::accept)
-        .listen(httpPort);
+      Integer httpPort = 8080;
+
+      vertx
+          .createHttpServer()
+          .requestHandler(router::accept)
+          .listen(httpPort);
 
       LOG.info("Listening on " + httpPort);
       future.complete();
