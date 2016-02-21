@@ -8,66 +8,66 @@ export default class App extends React.Component {
 
   render() {
     return (
-  <div class="container">
+  <div className="container">
     <div className="">
       <BoardWidget/>
     </div>
-    <div class="heading">
-      <h1 class="title">2048</h1>
-      <div class="scores-container">
-        <div class="score-container">0</div>
-        <div class="best-container">0</div>
+    <div className="heading">
+      <h1 className="title">2048</h1>
+      <div className="scores-container">
+        <div className="score-container">0</div>
+        <div className="best-container">0</div>
       </div>
     </div>
 
-    <div class="above-game">
-      <p class="game-intro">Join the numbers and get to the <strong>2048 tile!</strong></p>
-      <a class="restart-button">New Game</a>
+    <div className="above-game">
+      <p className="game-intro">Join the numbers and get to the <strong>2048 tile!</strong></p>
+      <a className="restart-button">New Game</a>
     </div>
 
-    <div class="game-container">
-      <div class="game-message">
+    <div className="game-container">
+      <div className="game-message">
         <p></p>
-        <div class="lower">
-          <a class="keep-playing-button">Keep going</a>
-          <a class="retry-button">Try again</a>
+        <div className="lower">
+          <a className="keep-playing-button">Keep going</a>
+          <a className="retry-button">Try again</a>
         </div>
       </div>
 
-      <div class="grid-container">
-        <div class="grid-row">
-          <div class="grid-cell"></div>
-          <div class="grid-cell"></div>
-          <div class="grid-cell"></div>
-          <div class="grid-cell"></div>
+      <div className="grid-container">
+        <div className="grid-row">
+          <div className="grid-cell"></div>
+          <div className="grid-cell"></div>
+          <div className="grid-cell"></div>
+          <div className="grid-cell"></div>
         </div>
-        <div class="grid-row">
-          <div class="grid-cell"></div>
-          <div class="grid-cell"></div>
-          <div class="grid-cell"></div>
-          <div class="grid-cell"></div>
+        <div className="grid-row">
+          <div className="grid-cell"></div>
+          <div className="grid-cell"></div>
+          <div className="grid-cell"></div>
+          <div className="grid-cell"></div>
         </div>
-        <div class="grid-row">
-          <div class="grid-cell"></div>
-          <div class="grid-cell"></div>
-          <div class="grid-cell"></div>
-          <div class="grid-cell"></div>
+        <div className="grid-row">
+          <div className="grid-cell"></div>
+          <div className="grid-cell"></div>
+          <div className="grid-cell"></div>
+          <div className="grid-cell"></div>
         </div>
-        <div class="grid-row">
-          <div class="grid-cell"></div>
-          <div class="grid-cell"></div>
-          <div class="grid-cell"></div>
-          <div class="grid-cell"></div>
+        <div className="grid-row">
+          <div className="grid-cell"></div>
+          <div className="grid-cell"></div>
+          <div className="grid-cell"></div>
+          <div className="grid-cell"></div>
         </div>
       </div>
 
-      <div class="tile-container">
+      <div className="tile-container">
 
       </div>
     </div>
 
-    <p class="game-explanation">
-      <strong class="important">How to play:</strong> Use your <strong>arrow keys</strong> to move the tiles. When two tiles with the same number touch, they <strong>merge into one!</strong>
+    <p className="game-explanation">
+      <strong className="important">How to play:</strong> Use your <strong>arrow keys</strong> to move the tiles. When two tiles with the same number touch, they <strong>merge into one!</strong>
     </p>
   </div>
     );

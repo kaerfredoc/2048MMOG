@@ -1,4 +1,4 @@
-import React from 'react/addons';
+import React from 'react';
 import AltContainer from 'alt-container';
 import connectToStores from 'alt-utils/lib/connectToStores';
 

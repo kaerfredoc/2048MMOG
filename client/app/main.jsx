@@ -1,6 +1,7 @@
 import alt from './libs/alt';
 import makeFinalStore from 'alt-utils/lib/makeFinalStore';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import App from './views/App';
 import VertxActions from './actions/VertxActions.js';
 import VertxStore from './stores/VertxStore';
@@ -15,7 +16,7 @@ function main() {
   const app = document.createElement('div');
   document.body.appendChild(app);
 
-  React.render(<App />, app);
+  ReactDOM.render(<App />, app);
 }
 
 main();
