@@ -5,7 +5,7 @@
   "scripts": {
     "start": "cross-env TARGET=dev webpack-dev-server --progress --colors --hot --inline --history-api-fallback",
     "devbuild": "cross-env TARGET=dev webpack",
-    "build": "cross-env TARGET=build webpack"
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -32,13 +32,13 @@
     "cross-env": "^1.0.7",
     "webpack": "^1.12.13",
     "webpack-dev-server": "^1.12.13",
+    "alt-utils": "^1.0.0",
     "webpack-merge": "^0.7.3"
   },
   "dependencies": {
     "alt": "^0.18.2",
     "alt-container": "^1.0.2",
     "alt-react": "0.0.1",
-    "alt-utils": "^1.0.0",
     "react": "^0.14.7",
     "react-dom": "^0.14.7"
   }
