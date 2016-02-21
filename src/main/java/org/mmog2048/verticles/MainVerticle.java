@@ -40,7 +40,8 @@ public class MainVerticle extends AbstractVerticle {
   }
 
   private void deployEmbeddedRedis(Future<Void> future) {
-    vertx.deployVerticle(EmbeddedRedis.class.getName(), result -> {
+    DeploymentOptions options = new DeploymentOptions().setWorker(true);
+    vertx.deployVerticle(EmbeddedRedis.class.getName(), options, result -> {
       if (result.failed()) {
         future.fail(result.cause());
       } else {
