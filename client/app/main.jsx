@@ -23,4 +23,5 @@ const Vertx = require('vertx3-eventbus-client');
 var eb = new Vertx("http://localhost:8080/eventbus");
 eb.onopen = function () {
   eb.publish("org.mmog2048", {"msg":"From the client"});
+  eb.publish("adam.test", {"msg": "Giggidy"});
 };
