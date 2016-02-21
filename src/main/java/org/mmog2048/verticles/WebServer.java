@@ -13,6 +13,7 @@ import io.vertx.ext.web.handler.sockjs.PermittedOptions;
 import io.vertx.ext.web.handler.sockjs.SockJSHandler;
 import io.vertx.redis.RedisClient;
 import io.vertx.redis.RedisOptions;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.mmog2048.dao.RedisDAO;
 import org.mmog2048.utils.RedisUtils;
@@ -41,7 +42,7 @@ public class WebServer extends AbstractVerticle {
             eb.publish("org.mmog2048:game-state",
                 new JsonObject().put("serverTime", now));
 
-            eb.publish("org.mmog2048:status-message", "Hello Cleveland " + now);
+            eb.publish("org.mmog2048:status-message", "Hello " + RandomStringUtils.randomAlphabetic(10) + " " + now);
           }
       );
 
