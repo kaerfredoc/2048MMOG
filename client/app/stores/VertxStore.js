@@ -3,7 +3,7 @@ import VertxActions from '../actions/VertxActions';
 
 var getEventBus = () => {
   const Vertx = require('vertx3-eventbus-client');
-  return (new Vertx('http://localhost:8080/eventbus'));
+  return (new Vertx('/eventbus'));
 };
 
 class VertxStore {
