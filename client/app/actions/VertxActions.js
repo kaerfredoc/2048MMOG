@@ -2,6 +2,10 @@ import alt from '../libs/alt';
 
 class VertxActions {
 
+    gameUpdate(message) {
+        this.dispatch(message);
+    }
+
     vertxReady(eventBus) {
         this.dispatch(eventBus);
     }
@@ -23,4 +27,4 @@ class VertxActions {
     }
 }
 
-export default alt.createActions(VertxActions);
+export default  alt.createActions(VertxActions);
