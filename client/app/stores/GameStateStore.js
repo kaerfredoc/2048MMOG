@@ -1,22 +1,14 @@
 import alt from '../libs/alt';
-
 import BusRoutes from '../libs/vertx-bus-routes';
-
 import VertxActions from '../actions/VertxActions';
 
 class GameStateStore {
   constructor() {
-    var self = this;
-
     this.state = {serverTime: "-"};
-
-    this.bindListeners({
-      handleVertxReady: VertxActions.vertxReady,
-      handleGameStateUpdate: VertxActions.gameUpdate
-    });
+    this.bindActions(VertxActions);
   }
 
-  handleVertxReady(eventBus) {
+  onVertxReady(eventBus) {
     console.log("eb" + eventBus);
     eventBus.registerHandler(
       BusRoutes.game_state,
@@ -24,7 +16,7 @@ class GameStateStore {
     );
   }
 
-  handleGameStateUpdate(message) {
+  onGameUpdate(message) {
     console.log(message);
     this.setState({serverTime: message.systemTime});
   };

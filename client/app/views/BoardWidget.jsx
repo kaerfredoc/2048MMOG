@@ -1,9 +1,10 @@
 import React from 'react/addons';
 import AltContainer from 'alt-container';
-import classSet from 'classnames';
+import connectToStores from 'alt-utils/lib/connectToStores';
 
-import VertxActions from '../actions/VertxActions.js';
+import VertxActions from '../actions/VertxActions';
 import GameStateStore from '../stores/GameStateStore';
+import VertxStore from '../stores/VertxStore';
 
 class WidgetView extends React.Component {
 
@@ -19,15 +20,21 @@ class WidgetView extends React.Component {
 }
 
 export default class BoardWidget extends React.Component {
+  static getStores(props) {
+    return [GameStateStore]
+  }
+
+  static getPropsFromStores(props) {
+    return GameStateStore.getState()
+  }
 
   render() {
     return (
       <div className="ui segment">
-        <AltContainer stores={{server: GameStateStore}}>
+        <AltContainer stores={{vertx: VertxStore, server: GameStateStore}}>
           <WidgetView />
         </AltContainer>
       </div>
     );
   }
-
 }
