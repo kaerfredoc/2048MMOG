@@ -14,6 +14,7 @@ import io.vertx.ext.web.handler.sockjs.SockJSHandler;
 import io.vertx.redis.RedisClient;
 import io.vertx.redis.RedisOptions;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.mmog2048.dao.RedisDAO;
 import org.mmog2048.utils.RedisUtils;
 
 import java.util.Date;
@@ -26,10 +27,10 @@ public class WebServer extends AbstractVerticle {
     try {
       JsonObject config = context.config();
       RedisOptions redisOptions = RedisUtils.createRedisOptions(config.getJsonObject("redis"));
-      RedisClient redisClient = RedisClient.create(vertx, redisOptions);
+      RedisDAO redisDAO = new RedisDAO(RedisClient.create(vertx, redisOptions));
 
       // todo What do we want to do with this guy
-//      redisClient
+//      redisDAO
 
       EventBus eb = vertx.eventBus();
       vertx.setPeriodic(
