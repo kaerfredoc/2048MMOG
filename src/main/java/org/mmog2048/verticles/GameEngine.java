@@ -34,7 +34,7 @@ public class GameEngine {
      * @param redisDAO
      * @return
      */
-    public static void updateGame(String token, String move, RedisDAO redisDAO, Handler<JsonArray> handler) {
+    public static void updateGame(String token, String move, RedisDAO redisDAO, Handler<JsonObject> handler) {
         //TODO: contest needs to come from somewhere else
         String contest = "thecontest";
         redisDAO.getBoardInfo(contest, token, boardInfo -> {

@@ -7,6 +7,7 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.redis.RedisClient;
 import org.apache.commons.lang3.StringUtils;
+import org.mmog2048.models.Tile;
 import org.mozilla.javascript.json.JsonParser;
 
 import java.text.ParseException;
@@ -39,9 +40,20 @@ public class RedisDAO {
         });
     }
 
-    public void saveBoardInfo(final String contest,final String token,JsonObject boardInfo,Handler<JsonArray> handler) {
+    public void saveBoardInfo(final String contest,final String token,JsonObject boardInfo,Handler<JsonObject> handler) {
         String key = contest+"-"+token;
         boardInfo.put("lastUpdate",System.currentTimeMillis());
+        JsonArray tiles = boardInfo.getJsonArray("tiles");
+        int score = 0;
+        for(Object obj:tiles) {
+            score = score + ((Tile) obj).getValue();
+        }
+        boardInfo.put("score",score);
+        if(2048 == score) {
+            boardInfo.put("complete",true);
+        } else {
+            boardInfo.put("complete",false);
+        }
         redis.set(key,boardInfo.toString(),result -> {
             if(result.failed()) {
                 log.error("unabled to save board for " + token, result.cause());
@@ -52,7 +64,7 @@ public class RedisDAO {
                         log.error("unable to update score for contest: " + contest + " and token: " + token, scoreResult.cause());
                         handler.handle(null);
                     } else {
-                        handler.handle(boardInfo.getJsonArray("tiles"));
+                        handler.handle(boardInfo);
                     }
                 });
             }
