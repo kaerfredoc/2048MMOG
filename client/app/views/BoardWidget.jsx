@@ -10,7 +10,7 @@ class WidgetView extends React.Component {
   render() {
     return (
       <div className="">
-        {this.props.server.serverTime}
+        {this.props.server.board}
         <div className="heading">
           <h1 className="title">2048</h1>
           <div className="scores-container">

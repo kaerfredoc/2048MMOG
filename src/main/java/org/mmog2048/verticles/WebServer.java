@@ -53,6 +53,11 @@ public class WebServer extends AbstractVerticle {
         String name = ((JsonObject)event.body()).getString("name");
 
         // todo write an initial game/board to redis
+        JsonArray board = new JsonArray(
+            "[0,0,0,0," +
+             "0,2,0,0," +
+             "0,0,0,0," +
+             "0,0,4,0]");
         String uuid = UUID.randomUUID().toString();
 
         // Register this specific game channel to receive moves
@@ -66,6 +71,7 @@ public class WebServer extends AbstractVerticle {
 
         JsonObject reply = new JsonObject();
         reply.put("token", uuid);
+        reply.put("board", board);
         event.reply(reply);
       });
 

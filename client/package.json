@@ -39,6 +39,7 @@
     "alt": "^0.18.2",
     "alt-container": "^1.0.2",
     "alt-react": "0.0.1",
+    "rc-form": "^0.13.4",
     "react": "^0.14.7",
     "react-dom": "^0.14.7"
   }
