@@ -11,10 +11,6 @@ class GameStateStore {
 
   onVertxReady(eventBus) {
     this.eventBus = eventBus;
-    eventBus.registerHandler(
-      BusRoutes.game_state,
-      VertxActions.gameUpdate
-    );
   }
 
   onRegister(name) {
@@ -25,8 +21,12 @@ class GameStateStore {
     }.bind(this));
   };
 
-  onGameUpdate(message) {
-    this.setState({boardState: message[1].body.board});
+  onMove(move) {
+    this.eventBus.send(BusRoutes.move + ":" +this.state.token, {"move": move}, function (err, res) {
+      if (res) {
+        this.setState({token: this.state.token, board: res.body.board});
+      }
+    }.bind(this));
   };
 }
 

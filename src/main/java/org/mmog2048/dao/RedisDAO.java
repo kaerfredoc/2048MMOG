@@ -38,6 +38,31 @@ public class RedisDAO {
     });
   }
 
+  public void getTopScores(final String contest, final Handler<JsonArray> handler) {
+    redis.zrange(contest, 0, 10, topKeys -> {
+      if (topKeys.failed()) {
+        log.error("unabled to get top scores - " + contest, topKeys.cause());
+        handler.handle(null);
+      } else {
+        if (topKeys.result().getList().size() > 0) {
+          redis.mgetMany(topKeys.result().getList(), result -> {
+            if (result.failed()) {
+              log.error("no board found ", result.cause());
+              handler.handle(null);
+            } else {
+              if (result.result().size() == 0) {
+                log.error("board found but the value is empty");
+                handler.handle(null);
+                return;
+              }
+              handler.handle(result.result());
+            }
+          });
+        }
+      };
+    });
+  }
+
   public void saveBoardInfo(final String contest, final String token, JsonObject boardInfo, Handler<JsonObject> handler) {
     String key = contest + "-" + token;
     boardInfo.put("lastUpdate", System.currentTimeMillis());
@@ -55,7 +80,7 @@ public class RedisDAO {
         log.error("unabled to save board for " + token, result.cause());
         handler.handle(null);
       } else {
-        redis.zadd(contest, boardInfo.getDouble("score"), token, scoreResult -> {
+        redis.zadd(contest, boardInfo.getDouble("score"), key, scoreResult -> {
           if (scoreResult.failed()) {
             log.error("unable to update score for contest: " + contest + " and token: " + token, scoreResult.cause());
             handler.handle(null);

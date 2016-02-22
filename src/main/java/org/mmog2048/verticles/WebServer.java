@@ -42,8 +42,10 @@ public class WebServer extends AbstractVerticle {
             String now = DateFormatUtils.ISO_DATETIME_FORMAT.format(new Date());
             System.out.println(now);
 
-            eb.publish("org.mmog2048:game-state",
-                new JsonObject().put("serverTime", now));
+            redisDAO.getTopScores(GameEngine.contest, event1 -> {
+              eb.publish("org.mmog2048:game-state",
+                  new JsonObject().put("boards", event1));
+            });
 
             eb.publish("org.mmog2048:status-message", "Hello " + RandomStringUtils.randomAlphabetic(10) + " " + now);
           }
@@ -65,7 +67,9 @@ public class WebServer extends AbstractVerticle {
         eb.consumer("org.mmog2048:move:" + uuid, eventMove -> {
           JsonObject eventMoveJson = ((JsonObject) eventMove.body());
           String move = eventMoveJson.getString("move");
-          GameEngine.updateGame(uuid, move, redisDAO, boardInfo -> eventMove.reply(boardInfo.getJsonArray("tiles")));
+          GameEngine.updateGame(uuid, move, redisDAO, boardInfo -> eventMove.reply(
+              new JsonObject().put("board", boardInfo.getJsonArray("tiles"))
+          ));
         });
 
         JsonObject reply = new JsonObject();
