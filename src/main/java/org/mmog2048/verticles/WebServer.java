@@ -64,7 +64,7 @@ public class WebServer extends AbstractVerticle {
         eb.consumer("org.mmog2048:move:" + uuid, eventMove -> {
           JsonObject eventMoveJson = ((JsonObject) eventMove.body());
           String move = eventMoveJson.getString("move");
-          GameEngine.updateGame(uuid, move, redisDAO, result -> eventMove.reply(result.getJsonArray("tiles")));
+          GameEngine.updateGame(uuid, move, redisDAO, boardInfo -> eventMove.reply(boardInfo.getJsonArray("tiles")));
         });
 
         JsonObject reply = new JsonObject();
