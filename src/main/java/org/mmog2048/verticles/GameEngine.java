@@ -149,13 +149,13 @@ public class GameEngine {
 
   private static JsonArray convertTilesToInts(List<Tile> tiles) {
     JsonArray entries = new JsonArray();
-    List<Tile> tileList = new ArrayList<>(tiles.size());
     tiles.forEach(tile -> entries.add(tile.getValue()));
     return entries;
   }
 
   private static List<Tile> rotate(int angle, List<Tile> myTiles) {
     List<Tile> newTiles = new ArrayList<>(16);
+    newTiles.addAll(myTiles);
     int offsetX = 3, offsetY = 3;
     if (angle == 90) {
       offsetY = 0;
@@ -170,7 +170,11 @@ public class GameEngine {
       for (int y = 0; y < 4; y++) {
         int newX = (x * cos) - (y * sin) + offsetX;
         int newY = (x * sin) + (y * cos) + offsetY;
-        newTiles.set((newX) + (newY) * 4, tileAt(x, y, myTiles));
+        if(myTiles != null && !myTiles.isEmpty()) {
+          int index = (newX) + (newY) * 4;
+          Tile newTile = tileAt(x, y, myTiles);
+          newTiles.set(index, newTile);
+        }
       }
     }
     return newTiles;
@@ -221,8 +225,11 @@ public class GameEngine {
 
   private static List<Tile> getLine(int index, List<Tile> myTiles) {
     List<Tile> result = new ArrayList<>(4);
-    for (int i = 0; i < 4; i++) {
-      result.set(i, tileAt(i, index, myTiles));
+    result.addAll(myTiles.subList(0,3));
+    if(myTiles != null && !myTiles.isEmpty()) {
+      for (int i = 0; i < 4; i++) {
+        result.set(i, tileAt(i, index, myTiles));
+      }
     }
     return result;
   }
