@@ -1,4 +1,5 @@
 var Grid = require('./grid');
+var Tile = require('./tile');
 
 function GameManager(size, InputManager/*, Actuator*/, StorageManager) {
   this.size           = size; // Size of the grid

@@ -3,6 +3,7 @@
 function WebsocketInputManager() {
   var eb = vertx.eventBus();
   var self = this;
+  this.events = {};
   ["move", "restart", "keepPlaying"].forEach(function(channelName) {
     eb.consumer(channelName, function(message) {
       self.emit(channelName, message.body());

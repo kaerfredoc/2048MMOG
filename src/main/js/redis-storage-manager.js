@@ -24,3 +24,8 @@ RedisStorageManager.prototype.setBestScore = function() {
   // TODO: Save to Redis
   this.bestScore = bestScore;
 };
+RedisStorageManager.prototype.getBestScore = function() {
+  return this.bestScore;
+};
+
+module.exports = RedisStorageManager;
