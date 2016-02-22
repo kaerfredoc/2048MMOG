@@ -9,7 +9,6 @@ import org.mmog2048.dao.RedisDAO;
 import org.mmog2048.models.Tile;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -89,11 +88,11 @@ public class GameEngine {
     }
 
     private static void left(final JsonObject boardInfo, final Handler<JsonObject> handler) {
-        leftInternal(boardInfo);
-        handler.handle(boardInfo);
+        JsonObject updatedBoardInfo = leftInternal(boardInfo);
+        handler.handle(updatedBoardInfo);
     }
 
-    private static List<Tile> leftInternal(JsonObject boardInfo) {
+    private static JsonObject leftInternal(JsonObject boardInfo) {
         List<Tile> myTiles = getMyTiles(boardInfo);
         boolean needAddTile = false;
         for (int i = 0; i < 4; i++) {
@@ -108,34 +107,34 @@ public class GameEngine {
             addTile(myTiles);
         }
         boardInfo.put("tiles",new JsonArray(myTiles));
-        return myTiles;
+        return boardInfo;
     }
 
     private static void up(final JsonObject boardInfo, final Handler<JsonObject> handler) {
         List<Tile> myTiles = getMyTiles(boardInfo);
         myTiles = rotate(90,myTiles);
-        leftInternal(boardInfo);
+        JsonObject updatedBoardInfo = leftInternal(boardInfo);
         myTiles = rotate(270,myTiles);
-        boardInfo.put("tiles",new JsonArray(myTiles));
-        handler.handle(boardInfo);
+        updatedBoardInfo.put("tiles",new JsonArray(myTiles));
+        handler.handle(updatedBoardInfo);
     }
 
     private static void right(final JsonObject boardInfo, final Handler<JsonObject> handler) {
         List<Tile> myTiles = getMyTiles(boardInfo);
         myTiles = rotate(180,myTiles);
-        leftInternal(boardInfo);
+        JsonObject updatedBoardInfo = leftInternal(boardInfo);
         myTiles = rotate(180,myTiles);
-        boardInfo.put("tiles",new JsonArray(myTiles));
-        handler.handle(boardInfo);
+        updatedBoardInfo.put("tiles",new JsonArray(myTiles));
+        handler.handle(updatedBoardInfo);
     }
 
     private static void down(final JsonObject boardInfo, final Handler<JsonObject> handler) {
         List<Tile> myTiles = getMyTiles(boardInfo);
         myTiles = rotate(90,myTiles);
-        leftInternal(boardInfo);
+        JsonObject updatedBoardInfo = leftInternal(boardInfo);
         myTiles = rotate(270,myTiles);
-        boardInfo.put("tiles",new JsonArray(myTiles));
-        handler.handle(boardInfo);
+        updatedBoardInfo.put("tiles",new JsonArray(myTiles));
+        handler.handle(updatedBoardInfo);
     }
 
     private static List<Tile> getMyTiles(JsonObject boardInfo) {
@@ -216,7 +215,7 @@ public class GameEngine {
         return result;
     }
 
-    private static void ensureSize(java.util.List<Tile> l, int s) {
+    private static void ensureSize(List<Tile> l, int s) {
         while (l.size() != s) {
             l.add(new Tile());
         }
