@@ -31,10 +31,10 @@ public class WebServer extends AbstractVerticle {
       JsonObject config = context.config();
       RedisOptions redisOptions = RedisUtils.createRedisOptions(config.getJsonObject("redis"));
       RedisClient redisClient = RedisClient.create(vertx, redisOptions);
-      RedisDAO redisDAO = new RedisDAO(redisClient);
-
-      // todo What do we want to do with this guy
+      // Clear db on restart
+      redisClient.flushall(event2 -> System.out.println(event2.result()));
       redisClient.info(event1 -> System.out.println(event1.result()));
+      RedisDAO redisDAO = new RedisDAO(redisClient);
 
       EventBus eb = vertx.eventBus();
       vertx.setPeriodic(
@@ -52,13 +52,14 @@ public class WebServer extends AbstractVerticle {
       eb.consumer("org.mmog2048:register", event -> {
         String name = ((JsonObject)event.body()).getString("name");
 
-        // todo write an initial game/board to redis
-        JsonArray board = new JsonArray(
+        JsonObject board = new JsonObject().put("tiles", new JsonArray(
             "[0,0,0,0," +
              "0,2,0,0," +
              "0,0,0,0," +
-             "0,0,4,0]");
+             "0,0,4,0]"));
+
         String uuid = UUID.randomUUID().toString();
+        redisDAO.saveBoardInfo(GameEngine.contest, uuid, board, event1 -> {});
 
         // Register this specific game channel to receive moves
         eb.consumer("org.mmog2048:move:" + uuid, eventMove -> {
