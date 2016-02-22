@@ -16,14 +16,15 @@ module.exports = function (eb, botName) {
 
 
   var makeAMove = function () {
-    var move = directions[Math.round(Math.random() * 3)];
-    // TODO: Consider any edge cases where this deadlocks
     if (moveAvailable && token) {
+      var move = directions[Math.round(Math.random() * 3)];
+      // TODO: Consider any edge cases where this deadlocks
       moveAvailable = false;
-      eb.send("org.mmog2048:move:" + token, {"move": move}, function (err, res) {
+      console.log('sending move ' + move);
+      eb.send("org.mmog2048:move:" + token, {"move": move}, function (res, err) {
+        moveAvailable = true;
         if (res) {
-          moveAvailable = true;
-          console.log("Received newA board: " + res.body.board);
+          console.log("Received newA board: " + res.body().board);
         }
       });
     }
@@ -32,9 +33,11 @@ module.exports = function (eb, botName) {
   var scheduleATurn = function (milliseconds) {
     setTimeout(function () {
       nextTurnTime = (Math.random() * 15000) + 500;
+      makeAMove();
       scheduleATurn(nextTurnTime);
     }, milliseconds);
   };
+  scheduleATurn(10);
 };
 
 
