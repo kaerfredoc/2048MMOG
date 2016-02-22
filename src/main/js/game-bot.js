@@ -6,7 +6,6 @@ module.exports = function (eb, botName) {
   console.log(botName);
 
   eb.send("org.mmog2048:register", {"name": botName}, function (res) {
-    console.log(JSON.stringify(res));
     if (res) {
       console.log("Received token: " + res.body().token);
       console.log("Received board: " + res.body().board);
