@@ -55,7 +55,9 @@ public class RedisDAO {
                 handler.handle(null);
                 return;
               }
-              handler.handle(result.result());
+              JsonArray jsonArray = new JsonArray();
+              result.result().forEach(o -> jsonArray.add(new JsonObject((String) o)));
+              handler.handle(jsonArray);
             }
           });
         }
