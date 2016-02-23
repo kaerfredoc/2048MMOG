@@ -9,6 +9,7 @@ import org.mmog2048.dao.RedisDAO;
 import org.mmog2048.models.Tile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -88,17 +89,18 @@ public class GameEngine {
   }
 
   private static void left(final JsonObject boardInfo, final Handler<JsonObject> handler) {
-    JsonObject updatedBoardInfo = leftInternal(boardInfo);
-    handler.handle(updatedBoardInfo);
+    List<Tile> myTiles = getMyTiles(boardInfo);
+    myTiles = leftInternal(myTiles);
+    boardInfo.put("tiles", convertTilesToInts(myTiles));
+    handler.handle(boardInfo);
   }
 
-  private static JsonObject leftInternal(JsonObject boardInfo) {
-    List<Tile> myTiles = getMyTiles(boardInfo);
+  private static List<Tile> leftInternal(List<Tile> myTiles) {
     boolean needAddTile = false;
     for (int i = 0; i < 4; i++) {
       List<Tile> line = getLine(i, myTiles);
       List<Tile> merged = mergeLine(moveLine(line));
-      setLine(i, merged, myTiles);
+      myTiles = setLine(i, merged, myTiles);
       if (!needAddTile && !compare(line, merged)) {
         needAddTile = true;
       }
@@ -109,34 +111,33 @@ public class GameEngine {
       addTile(myTiles);
     }
 
-    boardInfo.put("tiles", convertTilesToInts(myTiles));
-    return boardInfo;
+    return myTiles;
   }
 
   private static void up(final JsonObject boardInfo, final Handler<JsonObject> handler) {
     List<Tile> myTiles = getMyTiles(boardInfo);
     myTiles = rotate(90, myTiles);
-    JsonObject updatedBoardInfo = leftInternal(boardInfo);
+    myTiles = leftInternal(myTiles);
     myTiles = rotate(270, myTiles);
-    updatedBoardInfo.put("tiles", convertTilesToInts(myTiles));
+    JsonObject updatedBoardInfo = new JsonObject().put("tiles", convertTilesToInts(myTiles));
     handler.handle(updatedBoardInfo);
   }
 
   private static void right(final JsonObject boardInfo, final Handler<JsonObject> handler) {
     List<Tile> myTiles = getMyTiles(boardInfo);
     myTiles = rotate(180, myTiles);
-    JsonObject updatedBoardInfo = leftInternal(boardInfo);
+    myTiles = leftInternal(myTiles);
     myTiles = rotate(180, myTiles);
-    updatedBoardInfo.put("tiles", convertTilesToInts(myTiles));
+    JsonObject updatedBoardInfo = new JsonObject().put("tiles", convertTilesToInts(myTiles));
     handler.handle(updatedBoardInfo);
   }
 
   private static void down(final JsonObject boardInfo, final Handler<JsonObject> handler) {
     List<Tile> myTiles = getMyTiles(boardInfo);
     myTiles = rotate(90, myTiles);
-    JsonObject updatedBoardInfo = leftInternal(boardInfo);
+    myTiles = leftInternal(myTiles);
     myTiles = rotate(270, myTiles);
-    updatedBoardInfo.put("tiles", convertTilesToInts(myTiles));
+    JsonObject updatedBoardInfo = new JsonObject().put("tiles", convertTilesToInts(myTiles));
     handler.handle(updatedBoardInfo);
   }
 
@@ -170,7 +171,7 @@ public class GameEngine {
       for (int y = 0; y < 4; y++) {
         int newX = (x * cos) - (y * sin) + offsetX;
         int newY = (x * sin) + (y * cos) + offsetY;
-        if(myTiles != null && !myTiles.isEmpty()) {
+        if (myTiles != null && !myTiles.isEmpty()) {
           int index = (newX) + (newY) * 4;
           Tile newTile = tileAt(x, y, myTiles);
           newTiles.set(index, newTile);
@@ -191,6 +192,7 @@ public class GameEngine {
     } else {
       List<Tile> newLine = new ArrayList<>(4);
       ensureSize(l, 4);
+      ensureSize(newLine, 4);
       for (int i = 0; i < 4; i++) {
         newLine.set(i, l.removeFirst());
       }
@@ -219,16 +221,15 @@ public class GameEngine {
       return oldLine;
     } else {
       ensureSize(list, 4);
-      return new ArrayList<>(4);
+      return list;
     }
   }
 
   private static List<Tile> getLine(int index, List<Tile> myTiles) {
     List<Tile> result = new ArrayList<>(4);
-    result.addAll(myTiles.subList(0,3));
-    if(myTiles != null && !myTiles.isEmpty()) {
+    if (myTiles != null && !myTiles.isEmpty()) {
       for (int i = 0; i < 4; i++) {
-        result.set(i, tileAt(i, index, myTiles));
+        result.add(i, tileAt(i, index, myTiles));
       }
     }
     return result;
@@ -244,23 +245,27 @@ public class GameEngine {
     return myTiles.get(x + y * 4);
   }
 
-  private static void setLine(int index, List<Tile> re, List<Tile> myTiles) {
-    System.arraycopy(re, 0, myTiles, index * 4, 4);
+  private static List<Tile> setLine(int index, List<Tile> srcLine, List<Tile> destBoard) {
+    Tile[] tiles = destBoard.stream().toArray(Tile[]::new);
+    System.arraycopy(srcLine.toArray(), 0, tiles, index * 4, 4);
+    return Arrays.asList(tiles);
   }
 
   private static void addTile(List<Tile> myTiles) {
     List<Tile> list = availableSpace(myTiles);
     if (!list.isEmpty()) {
       int index = (int) (Math.random() * list.size()) % list.size();
-      Tile emptyTime = list.get(index);
-      emptyTime.setValue(Math.random() < 0.9 ? 2 : 4);
+      Tile emptyTile = list.get(index);
+      emptyTile.setValue(Math.random() < 0.9 ? 2 : 4);
     }
   }
 
 
   private static List<Tile> availableSpace(List<Tile> myTiles) {
     final List<Tile> list = new ArrayList<>(16);
-    list.addAll(myTiles.stream().filter(t -> t.isEmpty()).collect(Collectors.toList()));
+    list.addAll(myTiles.stream().filter(t ->
+        t.isEmpty()
+    ).collect(Collectors.toList()));
     return list;
   }
 
