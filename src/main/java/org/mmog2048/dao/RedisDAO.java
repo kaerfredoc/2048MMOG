@@ -40,7 +40,7 @@ public class RedisDAO {
   }
 
   public void getTopScores(final String contest, final Handler<JsonArray> handler) {
-    redis.zrevrange(contest, 0, 9, RangeOptions.NONE, topKeys -> {
+    redis.zrevrange(contest, 0, 11, RangeOptions.NONE, topKeys -> {
       if (topKeys.failed()) {
         log.error("unabled to get top scores - " + contest, topKeys.cause());
         handler.handle(null);
