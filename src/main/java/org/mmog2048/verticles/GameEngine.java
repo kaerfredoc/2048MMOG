@@ -116,9 +116,9 @@ public class GameEngine {
 
   private static void up(final JsonObject boardInfo, final Handler<JsonObject> handler) {
     List<Tile> myTiles = getMyTiles(boardInfo);
-    myTiles = rotate(90, myTiles);
-    myTiles = leftInternal(myTiles);
     myTiles = rotate(270, myTiles);
+    myTiles = leftInternal(myTiles);
+    myTiles = rotate(90, myTiles);
     JsonObject updatedBoardInfo = new JsonObject().put("tiles", convertTilesToInts(myTiles));
     handler.handle(updatedBoardInfo);
   }
