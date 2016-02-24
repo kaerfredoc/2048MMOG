@@ -58,7 +58,8 @@ public class WebServer extends AbstractVerticle {
             "[0,0,0,0," +
              "0,2,0,0," +
              "0,0,0,0," +
-             "0,0,4,0]"));
+             "0,0,4,0]"))
+            .put("name", name);
 
         String uuid = UUID.randomUUID().toString();
         redisDAO.saveBoardInfo(GameEngine.contest, uuid, board, event1 -> {});

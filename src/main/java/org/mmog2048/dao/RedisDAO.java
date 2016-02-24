@@ -68,29 +68,34 @@ public class RedisDAO {
 
   public void saveBoardInfo(final String contest, final String token, JsonObject boardInfo, Handler<JsonObject> handler) {
     String key = contest + "-" + token;
-    boardInfo.put("lastUpdate", System.currentTimeMillis());
-    JsonArray tiles = boardInfo.getJsonArray("tiles");
-    int score = (int) Collections.max(tiles.getList());
-    boardInfo.put("score", score);
-    if (2048 == score) {
-      boardInfo.put("complete", true);
-    } else {
-      boardInfo.put("complete", false);
-    }
-    redis.set(key, boardInfo.toString(), result -> {
-      if (result.failed()) {
-        log.error("unabled to save board for " + token, result.cause());
-        handler.handle(null);
-      } else {
-        redis.zadd(contest, boardInfo.getInteger("score"), key, scoreResult -> {
-          if (scoreResult.failed()) {
-            log.error("unable to update score for contest: " + contest + " and token: " + token, scoreResult.cause());
-            handler.handle(null);
-          } else {
-            handler.handle(boardInfo);
-          }
-        });
+    getBoardInfo(contest, token, oldBoard -> {
+      if (oldBoard != null) {
+        boardInfo.put("name", oldBoard.getValue("name"));
       }
+      boardInfo.put("lastUpdate", System.currentTimeMillis());
+      JsonArray tiles = boardInfo.getJsonArray("tiles");
+      int score = (int) Collections.max(tiles.getList());
+      boardInfo.put("score", score);
+      if (2048 == score) {
+        boardInfo.put("complete", true);
+      } else {
+        boardInfo.put("complete", false);
+      }
+      redis.set(key, boardInfo.toString(), result -> {
+        if (result.failed()) {
+          log.error("unabled to save board for " + token, result.cause());
+          handler.handle(null);
+        } else {
+          redis.zadd(contest, boardInfo.getInteger("score"), key, scoreResult -> {
+            if (scoreResult.failed()) {
+              log.error("unable to update score for contest: " + contest + " and token: " + token, scoreResult.cause());
+              handler.handle(null);
+            } else {
+              handler.handle(boardInfo);
+            }
+          });
+        }
+      });
     });
   }
 }
