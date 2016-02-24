@@ -17,6 +17,6 @@ eb.consumer("adam.test", function(message) {
   console.log("boom " + JSON.stringify(message.body()));
 });
 
-for (var x=0; x<3; x++) {
+for (var x=0; x<100; x++) {
   gameBot(eb, "Bot" + x.toString());
 }
