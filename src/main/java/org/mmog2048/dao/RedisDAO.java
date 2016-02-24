@@ -6,6 +6,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.redis.RedisClient;
+import io.vertx.redis.op.RangeOptions;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
@@ -39,7 +40,7 @@ public class RedisDAO {
   }
 
   public void getTopScores(final String contest, final Handler<JsonArray> handler) {
-    redis.zrange(contest, 0, 10, topKeys -> {
+    redis.zrevrange(contest, 0, 9, RangeOptions.NONE, topKeys -> {
       if (topKeys.failed()) {
         log.error("unabled to get top scores - " + contest, topKeys.cause());
         handler.handle(null);
@@ -69,8 +70,7 @@ public class RedisDAO {
     String key = contest + "-" + token;
     boardInfo.put("lastUpdate", System.currentTimeMillis());
     JsonArray tiles = boardInfo.getJsonArray("tiles");
-    int score = 0;
-    score = (int) Collections.max(tiles.getList());
+    int score = (int) Collections.max(tiles.getList());
     boardInfo.put("score", score);
     if (2048 == score) {
       boardInfo.put("complete", true);
@@ -82,7 +82,7 @@ public class RedisDAO {
         log.error("unabled to save board for " + token, result.cause());
         handler.handle(null);
       } else {
-        redis.zadd(contest, boardInfo.getDouble("score"), key, scoreResult -> {
+        redis.zadd(contest, boardInfo.getInteger("score"), key, scoreResult -> {
           if (scoreResult.failed()) {
             log.error("unable to update score for contest: " + contest + " and token: " + token, scoreResult.cause());
             handler.handle(null);
