@@ -12,10 +12,10 @@ export default class App extends React.Component {
   render() {
     return (
       <div className="container">
+        <h1 className="title">2048</h1>
         <StatusWidget/>
         <RegistrationForm/>
         <TopScoresWidget/>
-        <BoardWidget/>
       </div>
     );
   }

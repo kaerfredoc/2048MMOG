@@ -27,7 +27,7 @@ export default class StatusWidget extends React.Component {
 
   render() {
     return (
-      <div className="ui segment">
+      <div className="row">
         <AltContainer stores={{vertx: VertxStore, server: StatusStore}}>
           <WidgetView />
         </AltContainer>

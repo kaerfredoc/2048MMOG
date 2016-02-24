@@ -11,7 +11,7 @@ export default class RegistrationForm extends React.Component {
 
   render() {
     const {getFieldProps, getFieldError} = this.props.form;
-    return (<div>
+    return (<div className="row">
       <input {...getFieldProps('normal')}/>
       <button onClick={this.submit}>Join Contest</button>
     </div>)

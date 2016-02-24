@@ -85,7 +85,7 @@ export default class BoardWidget extends React.Component {
 
   render() {
     return (
-      <div className="ui segment">
+      <div className="row">
         <AltContainer stores={{vertx: VertxStore, server: GameStateStore}}>
           <WidgetView />
         </AltContainer>
