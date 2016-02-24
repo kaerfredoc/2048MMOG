@@ -17,6 +17,7 @@ var gridItem = {
 
 var grid = {
   display: "block",
+  textAlign: "center",
   padding: "10px"
 };
 
@@ -36,9 +37,27 @@ class BoardWrapper extends React.Component {
   render() {
     return (
       <div style={grid}>
-        {this.props.data.tiles.map(function (result, idx) {
-          return <TileWrapper key={idx} data={result}/>;
-        })}
+        <div>{this.props.data.name} [{this.props.data.score}]</div>
+        <div>
+          {this.props.data.tiles.slice(0,4).map(function (result, idx) {
+            return <TileWrapper key={idx} data={result}/>;
+          })}
+        </div>
+        <div>
+          {this.props.data.tiles.slice(4,8).map(function (result, idx) {
+            return <TileWrapper key={idx} data={result}/>;
+          })}
+        </div>
+        <div>
+          {this.props.data.tiles.slice(8,12).map(function (result, idx) {
+            return <TileWrapper key={idx} data={result}/>;
+          })}
+        </div>
+        <div>
+          {this.props.data.tiles.slice(12,16).map(function (result, idx) {
+            return <TileWrapper key={idx} data={result}/>;
+          })}
+        </div>
       </div>
     );
   }
