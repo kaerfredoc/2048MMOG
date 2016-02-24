@@ -33,14 +33,23 @@
     "webpack": "^1.12.13",
     "webpack-dev-server": "^1.12.13",
     "alt-utils": "^1.0.0",
-    "webpack-merge": "^0.7.3"
+    "webpack-merge": "^0.7.3",
+    "bootstrap": "^3.3.6",
+    "bootstrap-webpack": "0.0.5",
+    "exports-loader": "^0.6.3",
+    "imports-loader": "^0.6.5",
+    "jquery": "^2.2.1",
+    "less": "^2.6.0",
+    "less-loader": "^2.2.2"
   },
   "dependencies": {
     "alt": "^0.18.2",
     "alt-container": "^1.0.2",
     "alt-react": "0.0.1",
+    "autoresponsive-react": "^1.1.10",
     "rc-form": "^0.13.4",
     "react": "^0.14.7",
+    "react-bootstrap": "^0.28.3",
     "react-dom": "^0.14.7"
   }
 }

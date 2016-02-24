@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 import App from './views/App';
 import VertxActions from './actions/VertxActions.js';
 import VertxStore from './stores/VertxStore';
+require("bootstrap-webpack!./bootstrap.config.js");
 
 function main() {
   const finalStore = makeFinalStore(alt);

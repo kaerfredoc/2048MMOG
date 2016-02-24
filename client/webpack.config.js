@@ -4,7 +4,6 @@ var merge = require('webpack-merge');
 var webpack = require('webpack');
 var Clean = require('clean-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-
 var pkg = require('./package.json');
 
 var TARGET = 'build';
