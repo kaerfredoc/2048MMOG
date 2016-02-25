@@ -6,7 +6,6 @@ import App from './views/App';
 import VertxActions from './actions/VertxActions.js';
 import VertxStore from './stores/VertxStore';
 require("bootstrap-webpack!./bootstrap.config.js");
-import KeyboardInputManager from './KeyboardInputManager';
 
 function main() {
   const finalStore = makeFinalStore(alt);
