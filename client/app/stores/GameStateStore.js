@@ -5,7 +5,7 @@ import VertxActions from '../actions/VertxActions';
 class GameStateStore {
   eventBus;
   constructor() {
-    this.state = {serverTime: "-", "token": "-", "board": []};
+    this.state = {serverTime: "-", "token": "-"};
     this.bindActions(VertxActions);
   }
 

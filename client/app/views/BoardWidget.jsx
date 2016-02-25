@@ -4,19 +4,32 @@ import AltContainer from 'alt-container';
 import VertxActions from '../actions/VertxActions';
 import GameStateStore from '../stores/GameStateStore';
 import VertxStore from '../stores/VertxStore';
+import BoardWrapper from './BoardWrapper';
 
-class WidgetView extends React.Component {
+let style = {
+  height: 100,
+  width: 100,
+  cursor: 'default',
+  color: '#514713',
+  borderRadius: 5,
+  boxShadow: '0 1px 0 rgba(255,255,255,0.5) inset',
+  backgroundColor: '#a28f27',
+  borderColor: '#796b1d',
+  fontSize: '80px',
+  lineHeight: '100px',
+  textAlign: 'center',
+  fontWeight: 'bold',
+  textShadow: '1px 1px 0px #ab9a3c'
+};
+
+class BoardView extends React.Component {
 
   render() {
-    return (
+    if (this.props.server && this.props.server.board) {
+      return (
       <div className="">
-        {this.props.server.board}
         <div className="heading">
           <h1 className="title">2048</h1>
-          <div className="scores-container">
-            <div className="score-container">0</div>
-            <div className="best-container">0</div>
-          </div>
         </div>
 
         <div className="above-game">
@@ -33,36 +46,7 @@ class WidgetView extends React.Component {
             </div>
           </div>
 
-          <div className="grid-container">
-            <div className="grid-row">
-              <div className="grid-cell"></div>
-              <div className="grid-cell"></div>
-              <div className="grid-cell"></div>
-              <div className="grid-cell"></div>
-            </div>
-            <div className="grid-row">
-              <div className="grid-cell"></div>
-              <div className="grid-cell"></div>
-              <div className="grid-cell"></div>
-              <div className="grid-cell"></div>
-            </div>
-            <div className="grid-row">
-              <div className="grid-cell"></div>
-              <div className="grid-cell"></div>
-              <div className="grid-cell"></div>
-              <div className="grid-cell"></div>
-            </div>
-            <div className="grid-row">
-              <div className="grid-cell"></div>
-              <div className="grid-cell"></div>
-              <div className="grid-cell"></div>
-              <div className="grid-cell"></div>
-            </div>
-          </div>
-
-          <div className="tile-container">
-
-          </div>
+          <BoardWrapper style={style} data={this.props.server.board}/>
         </div>
 
         <p className="game-explanation">
@@ -70,26 +54,19 @@ class WidgetView extends React.Component {
           When two tiles with the same number touch, they <strong>merge into one!</strong>
         </p>
       </div>
-    );
+    )} else {
+      return (<div/>);
+    }
   }
 }
 
 export default class BoardWidget extends React.Component {
-  static getStores(props) {
-    return [GameStateStore]
-  }
 
-  static getPropsFromStores(props) {
-    return GameStateStore.getState()
-  }
-
-  render() {
-    return (
+  render() { return (
       <div className="row">
         <AltContainer stores={{vertx: VertxStore, server: GameStateStore}}>
-          <WidgetView />
+          <BoardView />
         </AltContainer>
       </div>
-    );
-  }
+  )}
 }

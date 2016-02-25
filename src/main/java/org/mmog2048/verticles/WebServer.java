@@ -69,7 +69,7 @@ public class WebServer extends AbstractVerticle {
           JsonObject eventMoveJson = ((JsonObject) eventMove.body());
           String move = eventMoveJson.getString("move");
           GameEngine.updateGame(uuid, move, redisDAO, boardInfo -> eventMove.reply(
-              new JsonObject().put("board", boardInfo.getJsonArray("tiles"))
+              new JsonObject().put("board", boardInfo)
           ));
         });
 
