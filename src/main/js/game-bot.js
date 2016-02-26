@@ -27,11 +27,11 @@ module.exports = function (eb, botName) {
         var move = directions[Math.round(Math.random() * 3)];
         // TODO: Consider any edge cases where this deadlocks
         moveAvailable = false;
-        console.log('sending move ' + move);
+        //console.log('sending move ' + move);
         eb.send("org.mmog2048:move:" + token, {"move": move}, function (res, err) {
           moveAvailable = true;
           if (res) {
-            console.log("Received newA board: " + JSON.stringify(res.body().board));
+            //console.log("Received newA board: " + JSON.stringify(res.body().board));
           }
         });
       }

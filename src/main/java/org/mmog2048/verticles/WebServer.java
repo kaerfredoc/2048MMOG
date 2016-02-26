@@ -14,11 +14,9 @@ import io.vertx.ext.web.handler.sockjs.PermittedOptions;
 import io.vertx.ext.web.handler.sockjs.SockJSHandler;
 import io.vertx.redis.RedisClient;
 import io.vertx.redis.RedisOptions;
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.mmog2048.dao.RedisDAO;
 import org.mmog2048.utils.RedisUtils;
 
-import java.util.Date;
 import java.util.UUID;
 
 public class WebServer extends AbstractVerticle {
@@ -38,9 +36,6 @@ public class WebServer extends AbstractVerticle {
       EventBus eb = vertx.eventBus();
       vertx.setPeriodic(
           500, event -> {
-            String now = DateFormatUtils.ISO_DATETIME_FORMAT.format(new Date());
-            System.out.println(now);
-
             redisDAO.getTopScores(GameEngine.contest, event1 -> {
               eb.publish("org.mmog2048:game-state",
                   new JsonObject().put("boards", event1));
