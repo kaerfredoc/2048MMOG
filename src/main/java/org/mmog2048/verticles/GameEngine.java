@@ -172,7 +172,7 @@ public class GameEngine {
         int newX = (x * cos) - (y * sin) + offsetX;
         int newY = (x * sin) + (y * cos) + offsetY;
         if (myTiles != null && !myTiles.isEmpty()) {
-          int index = (newX) + (newY) * 4;
+          int index = newX + (newY * 4);
           Tile newTile = tileAt(x, y, myTiles);
           newTiles.set(index, newTile);
         }
@@ -187,12 +187,13 @@ public class GameEngine {
       if (!oldLine.get(i).isEmpty())
         l.addLast(oldLine.get(i));
     }
+
     if (l.size() == 0) {
       return oldLine;
     } else {
       List<Tile> newLine = new ArrayList<>(4);
-      ensureSize(l, 4);
       ensureSize(newLine, 4);
+      ensureSize(l, 4);
       for (int i = 0; i < 4; i++) {
         newLine.set(i, l.removeFirst());
       }
@@ -225,11 +226,11 @@ public class GameEngine {
     }
   }
 
-  private static List<Tile> getLine(int index, List<Tile> myTiles) {
+  private static List<Tile> getLine(int y, List<Tile> myTiles) {
     List<Tile> result = new ArrayList<>(4);
     if (myTiles != null && !myTiles.isEmpty()) {
       for (int i = 0; i < 4; i++) {
-        result.add(i, tileAt(i, index, myTiles));
+        result.add(i, tileAt(i, y, myTiles));
       }
     }
     return result;
@@ -242,7 +243,7 @@ public class GameEngine {
   }
 
   private static Tile tileAt(int x, int y, List<Tile> myTiles) {
-    return myTiles.get(x + y * 4);
+    return new Tile(myTiles.get(x + (y * 4)).getValue());
   }
 
   private static List<Tile> setLine(int index, List<Tile> srcLine, List<Tile> destBoard) {
