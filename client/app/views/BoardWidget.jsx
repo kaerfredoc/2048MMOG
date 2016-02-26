@@ -28,10 +28,6 @@ class BoardView extends React.Component {
     if (this.props.server && this.props.server.board) {
       return (
       <div className="">
-        <div className="heading">
-          <h1 className="title">2048</h1>
-        </div>
-
         <div className="above-game">
           <p className="game-intro">Join the numbers and get to the <strong>2048 tile!</strong></p>
           <a className="restart-button">New Game</a>

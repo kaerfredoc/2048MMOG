@@ -31,7 +31,7 @@ module.exports = function (eb, botName) {
         eb.send("org.mmog2048:move:" + token, {"move": move}, function (res, err) {
           moveAvailable = true;
           if (res) {
-            console.log("Received newA board: " + res.body().board);
+            console.log("Received newA board: " + JSON.stringify(res.body().board));
           }
         });
       }
