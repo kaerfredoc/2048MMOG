@@ -3,8 +3,9 @@ import React from 'react';
 var gridItem = {
   display: "inline-block",
   border: "2px solid black",
-  width: "38px",
-  height: "38px",
+  width: "2.6em",
+  height: "2.6em",
+  paddingTop: "0.5em",
   margin: "2px",
   textAlign: "center",
   fontSize: "1.1em"
