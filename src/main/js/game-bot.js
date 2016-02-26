@@ -15,7 +15,7 @@ module.exports = function (eb, botName) {
 
     var scheduleATurn = function (milliseconds) {
       setTimeout(function () {
-        nextTurnTime = (Math.random() * 1500) + 500;
+        nextTurnTime = (Math.random() * 3000) + 500;
         makeAMove();
         scheduleATurn(nextTurnTime);
       }, milliseconds);
