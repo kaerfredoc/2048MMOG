@@ -72,6 +72,7 @@ public class GameEngine {
               redisDAO.saveBoardInfo(contest, token, postGameInfo, result -> handler.handle(result));
             }
           });
+          break;
         case "D":
           down(boardInfo, postGameInfo -> {
             if (postGameInfo == null || postGameInfo.isEmpty()) {
