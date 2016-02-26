@@ -38,7 +38,7 @@ public class WebServer extends AbstractVerticle {
 
       EventBus eb = vertx.eventBus();
       vertx.setPeriodic(
-          1000, event -> {
+          500, event -> {
             String now = DateFormatUtils.ISO_DATETIME_FORMAT.format(new Date());
             System.out.println(now);
 
