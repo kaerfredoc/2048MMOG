@@ -27,29 +27,28 @@ class BoardView extends React.Component {
   render() {
     if (this.props.server && this.props.server.board) {
       return (
-      <div className="">
-        <div className="above-game">
-          <p className="game-intro">Join the numbers and get to the <strong>2048 tile!</strong></p>
-          <a className="restart-button">New Game</a>
-        </div>
-
-        <div className="game-container">
-          <div className="game-message">
-            <p></p>
-            <div className="lower">
-              <a className="keep-playing-button">Keep going</a>
-              <a className="retry-button">Try again</a>
-            </div>
+        <div className="">
+          <div className="above-game">
+            <p className="game-intro">Join the numbers and get to the <strong>2048 tile!</strong></p>
+            <a className="restart-button">New Game</a>
           </div>
 
-          <BoardWrapper style={style} data={this.props.server.board}/>
-        </div>
+          <div className="game-container">
+            <div className="game-message">
+              <div className="lower">
+                <a className="keep-playing-button">Keep going</a>
+                <a className="retry-button">Try again</a>
+              </div>
+            </div>
 
-        <p className="game-explanation">
-          <strong className="important">How to play:</strong> Use your <strong>arrow keys</strong> to move the tiles.
-          When two tiles with the same number touch, they <strong>merge into one!</strong>
-        </p>
-      </div>
+            <BoardWrapper style={style} data={this.props.server.board}/>
+          </div>
+
+          <p className="game-explanation">
+            <strong className="important">How to play:</strong> Use your <strong>arrow keys</strong> to move the tiles.
+            When two tiles with the same number touch, they <strong>merge into one!</strong>
+          </p>
+        </div>
     )} else {
       return (<div/>);
     }
