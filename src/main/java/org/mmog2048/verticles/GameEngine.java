@@ -7,12 +7,11 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import org.mmog2048.dao.RedisDAO;
 import org.mmog2048.models.Tile;
+import org.mmog2048.utils.GameMoveEngine;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class GameEngine {
   private static final Logger LOG = LoggerFactory.getLogger(GameEngine.class);
@@ -42,104 +41,29 @@ public class GameEngine {
       if (boardInfo == null || boardInfo.isEmpty()) {
         return;
       }
+
+      GameMoveEngine gme = new GameMoveEngine(getMyTiles(boardInfo).toArray(new Tile[0]));
+
       switch (move) {
         case "L":
-          left(boardInfo, postGameInfo -> {
-            if (postGameInfo == null || postGameInfo.isEmpty()) {
-              LOG.error("postGameInfo is null or empty for contest: " + contest + " and token: " + token);
-              handler.handle(null);
-            } else {
-              redisDAO.saveBoardInfo(contest, token, postGameInfo, result -> handler.handle(result));
-            }
-          });
+          gme.left();
           break;
         case "U":
-          up(boardInfo, postGameInfo -> {
-            if (postGameInfo == null || postGameInfo.isEmpty()) {
-              LOG.error("postGameInfo is null or empty for contest: " + contest + " and token: " + token);
-              handler.handle(null);
-            } else {
-              redisDAO.saveBoardInfo(contest, token, postGameInfo, result -> handler.handle(result));
-            }
-          });
+          gme.up();
           break;
         case "R":
-          right(boardInfo, postGameInfo -> {
-            if (postGameInfo == null || postGameInfo.isEmpty()) {
-              LOG.error("postGameInfo is null or empty for contest: " + contest + " and token: " + token);
-              handler.handle(null);
-            } else {
-              redisDAO.saveBoardInfo(contest, token, postGameInfo, result -> handler.handle(result));
-            }
-          });
+          gme.right();
           break;
         case "D":
-          down(boardInfo, postGameInfo -> {
-            if (postGameInfo == null || postGameInfo.isEmpty()) {
-              LOG.error("postGameInfo is null or empty for contest: " + contest + " and token: " + token);
-              handler.handle(null);
-            } else {
-              redisDAO.saveBoardInfo(contest, token, postGameInfo, result -> handler.handle(result));
-            }
-          });
+          gme.down();
           break;
         default:
           return;
       }
+
+      JsonObject jsonObject = new JsonObject().put("tiles", convertTilesToInts(Arrays.asList(gme.myTiles)));
+      redisDAO.saveBoardInfo(contest, token, jsonObject, result -> handler.handle(result));
     });
-  }
-
-  private static void left(final JsonObject boardInfo, final Handler<JsonObject> handler) {
-    List<Tile> myTiles = getMyTiles(boardInfo);
-    myTiles = leftInternal(myTiles);
-    boardInfo.put("tiles", convertTilesToInts(myTiles));
-    handler.handle(boardInfo);
-  }
-
-  private static List<Tile> leftInternal(List<Tile> myTiles) {
-    boolean needAddTile = false;
-    for (int i = 0; i < 4; i++) {
-      List<Tile> line = getLine(i, myTiles);
-      List<Tile> merged = mergeLine(moveLine(line));
-      myTiles = setLine(i, merged, myTiles);
-      if (!needAddTile && !compare(line, merged)) {
-        needAddTile = true;
-      }
-    }
-
-    // If there are empty spaces
-    if (needAddTile) {
-      addTile(myTiles);
-    }
-
-    return myTiles;
-  }
-
-  private static void up(final JsonObject boardInfo, final Handler<JsonObject> handler) {
-    List<Tile> myTiles = getMyTiles(boardInfo);
-    myTiles = rotate(270, myTiles);
-    myTiles = leftInternal(myTiles);
-    myTiles = rotate(90, myTiles);
-    JsonObject updatedBoardInfo = new JsonObject().put("tiles", convertTilesToInts(myTiles));
-    handler.handle(updatedBoardInfo);
-  }
-
-  private static void right(final JsonObject boardInfo, final Handler<JsonObject> handler) {
-    List<Tile> myTiles = getMyTiles(boardInfo);
-    myTiles = rotate(180, myTiles);
-    myTiles = leftInternal(myTiles);
-    myTiles = rotate(180, myTiles);
-    JsonObject updatedBoardInfo = new JsonObject().put("tiles", convertTilesToInts(myTiles));
-    handler.handle(updatedBoardInfo);
-  }
-
-  private static void down(final JsonObject boardInfo, final Handler<JsonObject> handler) {
-    List<Tile> myTiles = getMyTiles(boardInfo);
-    myTiles = rotate(90, myTiles);
-    myTiles = leftInternal(myTiles);
-    myTiles = rotate(270, myTiles);
-    JsonObject updatedBoardInfo = new JsonObject().put("tiles", convertTilesToInts(myTiles));
-    handler.handle(updatedBoardInfo);
   }
 
   private static List<Tile> getMyTiles(JsonObject boardInfo) {
@@ -154,136 +78,4 @@ public class GameEngine {
     tiles.forEach(tile -> entries.add(tile.getValue()));
     return entries;
   }
-
-  private static List<Tile> rotate(int angle, List<Tile> myTiles) {
-    List<Tile> newTiles = new ArrayList<>(16);
-    ensureSize(newTiles, 16);
-    int offsetX = 3, offsetY = 3;
-    if (angle == 90) {
-      offsetY = 0;
-    } else if (angle == 270) {
-      offsetX = 0;
-    }
-
-    double rad = Math.toRadians(angle);
-    int cos = (int) Math.cos(rad);
-    int sin = (int) Math.sin(rad);
-    for (int x = 0; x < 4; x++) {
-      for (int y = 0; y < 4; y++) {
-        int newX = (x * cos) - (y * sin) + offsetX;
-        int newY = (x * sin) + (y * cos) + offsetY;
-        if (myTiles != null && !myTiles.isEmpty()) {
-          int index = newX + (newY * 4);
-          Tile newTile = tileAt(x, y, myTiles);
-          newTiles.set(index, newTile);
-        }
-      }
-    }
-    return newTiles;
-  }
-
-  private static List<Tile> moveLine(List<Tile> oldLine) {
-    LinkedList<Tile> l = new LinkedList<>();
-    for (int i = 0; i < 4; i++) {
-      if (!oldLine.get(i).isEmpty())
-        l.addLast(oldLine.get(i));
-    }
-
-    if (l.size() == 0) {
-      return oldLine;
-    } else {
-      List<Tile> newLine = new ArrayList<>(4);
-      ensureSize(newLine, 4);
-      ensureSize(l, 4);
-      for (int i = 0; i < 4; i++) {
-        newLine.set(i, l.removeFirst());
-      }
-      return newLine;
-    }
-  }
-
-  private static List<Tile> mergeLine(List<Tile> oldLine) {
-    List<Tile> list = new LinkedList<>();
-    for (int i = 0; i < 4 && !oldLine.get(i).isEmpty(); i++) {
-      int num = oldLine.get(i).getValue();
-      if (i < 3 && oldLine.get(i).getValue() == oldLine.get(i + 1).getValue()) {
-        num *= 2;
-        //TODO: write the score here or later?
-        //myScore += num;
-        int ourTarget = 2048;
-        if (num == ourTarget) {
-          //TODO: when should we say we won?
-          //myWin = true;
-        }
-        i++;
-      }
-      list.add(new Tile(num));
-    }
-    if (list.size() == 0) {
-      return oldLine;
-    } else {
-      ensureSize(list, 4);
-      return list;
-    }
-  }
-
-  private static List<Tile> getLine(int y, List<Tile> myTiles) {
-    List<Tile> result = new ArrayList<>(4);
-    if (myTiles != null && !myTiles.isEmpty()) {
-      for (int i = 0; i < 4; i++) {
-        result.add(i, tileAt(i, y, myTiles));
-      }
-    }
-    return result;
-  }
-
-  private static void ensureSize(List<Tile> l, int s) {
-    while (l.size() != s) {
-      l.add(new Tile());
-    }
-  }
-
-  private static Tile tileAt(int x, int y, List<Tile> myTiles) {
-    return new Tile(myTiles.get(x + (y * 4)).getValue());
-  }
-
-  private static List<Tile> setLine(int index, List<Tile> srcLine, List<Tile> destBoard) {
-    Tile[] tiles = destBoard.stream().toArray(Tile[]::new);
-    System.arraycopy(srcLine.toArray(), 0, tiles, index * 4, 4);
-    return Arrays.asList(tiles);
-  }
-
-  private static void addTile(List<Tile> myTiles) {
-    List<Tile> list = availableSpace(myTiles);
-    if (!list.isEmpty()) {
-      int index = (int) (Math.random() * list.size()) % list.size();
-      Tile emptyTile = list.get(index);
-      emptyTile.setValue(Math.random() < 0.9 ? 2 : 4);
-    }
-  }
-
-
-  private static List<Tile> availableSpace(List<Tile> myTiles) {
-    final List<Tile> list = new ArrayList<>(16);
-    list.addAll(myTiles.stream().filter(t ->
-        t.isEmpty()
-    ).collect(Collectors.toList()));
-    return list;
-  }
-
-  private static boolean compare(List<Tile> line1, List<Tile> line2) {
-    if (line1 == line2) {
-      return true;
-    } else if (line1.size() != line2.size()) {
-      return false;
-    }
-
-    for (int i = 0; i < line1.size(); i++) {
-      if (line1.get(i).getValue() != line2.get(i).getValue()) {
-        return false;
-      }
-    }
-    return true;
-  }
-
 }
