@@ -1,15 +1,15 @@
 module.exports = function (eb, botName) {
   //Every x seconds try to move...
   var directions = ['U', 'D', 'L', 'R'];
-  console.log(botName);
+  // console.log(botName);
 
   eb.send("org.mmog2048:register", {"name": botName}, function (res) {
     var token;
     var moveAvailable = true;
 
     if (res) {
-      console.log("Received token: " + res.body().token);
-      console.log("Received board: " + res.body().board);
+      // console.log("Received token: " + res.body().token);
+      // console.log("Received board: " + res.body().board);
       token = res.body().token;
     }
 

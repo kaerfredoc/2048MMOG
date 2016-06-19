@@ -23,7 +23,7 @@ public class MainVerticle extends AbstractVerticle {
 
   @Override
   public void start(Future<Void> future) {
-    deployEmbeddedDbs(future, this::deployWebServer);
+    deployWebServer(future);
   }
 
   private void deployEmbeddedDbs(Future<Void> future, Handler<Future<Void>> whatsNext) {
@@ -53,6 +53,7 @@ public class MainVerticle extends AbstractVerticle {
 
   private void deployWebServer(Future<Void> future) {
     vertx.deployVerticle("src/main/js/board-engine-verticle.js");
+    vertx.deployVerticle("org.mmog2048.verticles.WsClients");
 
     DeploymentOptions options = new DeploymentOptions().setConfig(redisConfig());
     vertx.deployVerticle(WebServer.class.getName(), options, serverResult -> {
